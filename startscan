@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# For some reason the modem won't connect if the scanner is running already. Let's first make sure the modem
+# is detected before start scanning.
+
+echo "Checking if modem is connected..."
+
+modem_present="$(if mmcli -L | grep -i 'found 1 modem' > /dev/null ; then echo 1; else echo 0; fi)"
+
+until [ "$modem_present" == "1" ]
+do
+	echo "Waiting for modem..."
+	sleep 2
+        modem_present="$(if mmcli -L | grep -i 'found 1 modem' > /dev/null ; then echo 1; else echo 0; fi)"
+done
+
+echo "Modem found!"
+
+sleep 5 
+
+echo "Starting scan..."
+sleep 10
+python startscan.py
+
